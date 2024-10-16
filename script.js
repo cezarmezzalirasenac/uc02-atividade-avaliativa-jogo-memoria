@@ -13,6 +13,11 @@ const languages = [
 const divRoot = document.getElementById("root")
 const cdnImageURL = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons"
 
+const randomCardsList = []
+const cardDivList = []
+randomCardsList.push(...languages.sort(() => Math.random() - 0.5))
+randomCardsList.push(...languages.sort(() => Math.random() - 0.5))
+
 const timer = document.getElementById("timer")
 let seconds = 0
 let minutes = 0
@@ -43,25 +48,55 @@ const startTimer = () => {
     }, 1000)
 }
 
+const turnCardDown = (cardId) => {
+    const elementId = `card-number-${cardId}`
+    const card = document.getElementById(elementId)
+    card.classList.add("card-turned-down")
+    card.innerHTML = ''
+    card.addEventListener("click", turnCardUp)
+}
+
 let cardsTurned = 0
+let lastCardFlippedId = null
+let points = 0
+const divPoints = document.getElementById("points")
+
+const turnCardDownTimeout = (currentCardId) => {
+    setTimeout(() => {
+        turnCardDown(lastCardFlippedId)
+        turnCardDown(currentCardId)
+        lastCardFlippedId = null
+        cardsTurned = 0
+    }, 1000);
+}
 
 const turnCardUp = (event) => {
-    if (!timerRunning) {
-        startTimer()
-    }
     cardsTurned++
-    if (cardsTurned === 2) {
 
-    }
+    if (cardsTurned > 2) return
+
+    if (!timerRunning) startTimer()
 
     const card = event.target
-
-    card.classList.add("flip")
     card.removeEventListener("click", turnCardUp)
-
-    const cardNumber = card.id.split("-")[2]
+    
+    const currentCardId = card.id.split("-")[2]
     card.classList.remove("card-turned-down")
-    card.innerHTML = `<img src="${cdnImageURL}/${randomCardsList[cardNumber].path}">`
+    card.innerHTML = `<img src="${cdnImageURL}/${randomCardsList[currentCardId].path}">`
+
+    if (!lastCardFlippedId) {
+        lastCardFlippedId = currentCardId
+    } else {
+        if (randomCardsList[currentCardId].languageName === randomCardsList[lastCardFlippedId].languageName) {
+            points++
+            divPoints.innerHTML = points
+            lastCardFlippedId = null
+            cardsTurned = 0
+        } else {
+            turnCardDownTimeout(currentCardId)
+        }
+    }
+
 }
 
 function addCards(itemCount) {
@@ -71,16 +106,12 @@ function addCards(itemCount) {
         cardDiv.classList.add("card")
         cardDiv.classList.add("card-turned-down")
         cardDiv.id = `card-number-${i}`
-        // cardDiv.innerHTML = `
-        //   <img src="./assets/codememo.svg"/>
-        // `
+        cardDivList.push(cardDiv)
         divRoot.appendChild(cardDiv)
     }
 }
 
-const randomCardsList = []
-randomCardsList.push(...languages.sort(() => Math.random() - 0.5))
-randomCardsList.push(...languages.sort(() => Math.random() - 0.5))
+
 
 
 addCards(randomCardsList.length)
