@@ -24,6 +24,10 @@ let minutes = 0
 let hours = 0
 let timerInterval
 let timerRunning = false
+let cardsTurned = 0
+let lastCardFlippedId = null
+let points = 0
+const divPoints = document.getElementById("points")
 
 const addZero = (number) => {
     return number < 10 ? `0${number}` : number
@@ -48,19 +52,6 @@ const startTimer = () => {
     }, 1000)
 }
 
-const turnCardDown = (cardId) => {
-    const elementId = `card-number-${cardId}`
-    const card = document.getElementById(elementId)
-    card.classList.add("card-turned-down")
-    card.innerHTML = ''
-    card.addEventListener("click", turnCardUp)
-}
-
-let cardsTurned = 0
-let lastCardFlippedId = null
-let points = 0
-const divPoints = document.getElementById("points")
-
 const turnCardDownTimeout = (currentCardId) => {
     setTimeout(() => {
         turnCardDown(lastCardFlippedId)
@@ -79,7 +70,7 @@ const turnCardUp = (event) => {
 
     const card = event.target
     card.removeEventListener("click", turnCardUp)
-    
+
     const currentCardId = card.id.split("-")[2]
     card.classList.remove("card-turned-down")
     card.innerHTML = `<img src="${cdnImageURL}/${randomCardsList[currentCardId].path}">`
@@ -99,7 +90,15 @@ const turnCardUp = (event) => {
 
 }
 
-function addCards(itemCount) {
+const turnCardDown = (cardId) => {
+    const elementId = `card-number-${cardId}`
+    const card = document.getElementById(elementId)
+    card.classList.add("card-turned-down")
+    card.innerHTML = ''
+    card.addEventListener("click", turnCardUp)
+}
+
+function createCardsOnScreen(itemCount) {
     for (let i = 0; i < itemCount; i++) {
         const cardDiv = document.createElement("div")
         cardDiv.addEventListener("click", turnCardUp)
@@ -111,7 +110,4 @@ function addCards(itemCount) {
     }
 }
 
-
-
-
-addCards(randomCardsList.length)
+createCardsOnScreen(randomCardsList.length)
