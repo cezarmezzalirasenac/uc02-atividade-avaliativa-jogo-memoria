@@ -12,13 +12,11 @@ const languages = [
 
 const divRoot = document.getElementById("root")
 const cdnImageURL = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons"
-
-const randomCardsList = []
-const cardDivList = []
-randomCardsList.push(...languages.sort(() => Math.random() - 0.5))
-randomCardsList.push(...languages.sort(() => Math.random() - 0.5))
-
 const timer = document.getElementById("timer")
+
+let randomCardsList = []
+let cardDivList = []
+
 let seconds = 0
 let minutes = 0
 let hours = 0
@@ -29,28 +27,13 @@ let lastCardFlippedId = null
 let points = 0
 const divPoints = document.getElementById("points")
 
+
+
 const addZero = (number) => {
     return number < 10 ? `0${number}` : number
 }
 
-const startTimer = () => {
-    timerRunning = true
-    timerInterval = setInterval(() => {
-        seconds++
-        if (seconds === 60) {
-            seconds = 0
-            minutes++
-            if (minutes === 60) {
-                minutes = 0
-                hours++
-            }
-        }
-        const formattedSeconds = addZero(seconds)
-        const formattedMinutes = addZero(minutes)
-        const formattedHours = addZero(hours)
-        timer.innerHTML = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`
-    }, 1000)
-}
+
 
 const turnCardDownTimeout = (currentCardId) => {
     setTimeout(() => {
@@ -98,6 +81,8 @@ const turnCardDown = (cardId) => {
     card.addEventListener("click", turnCardUp)
 }
 
+
+
 function createCardsOnScreen(itemCount) {
     for (let i = 0; i < itemCount; i++) {
         const cardDiv = document.createElement("div")
@@ -110,4 +95,46 @@ function createCardsOnScreen(itemCount) {
     }
 }
 
-createCardsOnScreen(randomCardsList.length)
+function createRandomCardsList() {
+    divRoot.innerHTML = ""
+    cardDivList = []
+    randomCardsList = []
+    randomCardsList.push(...languages.sort(() => Math.random() - 0.5))
+    randomCardsList.push(...languages.sort(() => Math.random() - 0.5))
+    createCardsOnScreen(randomCardsList.length)
+}
+
+
+const startTimer = () => {
+    timerRunning = true
+    timerInterval = setInterval(() => {
+        seconds++
+        if (seconds === 60) {
+            seconds = 0
+            minutes++
+            if (minutes === 60) {
+                minutes = 0
+                hours++
+            }
+        }
+        const formattedSeconds = addZero(seconds)
+        const formattedMinutes = addZero(minutes)
+        const formattedHours = addZero(hours)
+        timer.innerHTML = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`
+    }, 1000)
+}
+
+function stopTimer() {
+    clearInterval(timerInterval)
+    timerRunning = false
+    createRandomCardsList()
+}
+
+
+const buttonStartTimer = document.getElementById("start-btn")
+buttonStartTimer.addEventListener("click", startTimer)
+
+const buttonStopTimer = document.getElementById("stop-btn")
+buttonStopTimer.addEventListener("click", stopTimer)
+
+createRandomCardsList()
