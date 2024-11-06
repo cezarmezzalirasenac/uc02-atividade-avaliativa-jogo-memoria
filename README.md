@@ -169,7 +169,7 @@ sudo chmod -R 755 /var/www/html
 
 8.2 Copiando os arquivos de um repositório git público ou quando o servidor está configurado com chave SSH pública no GitHub:
 ```sh
-cd 
+cd /var/www/html
 git clone git@github.com:cezarmezzalirasenac/uc02-atividade-avaliativa-jogo-memoria.git site-jogo-memoria
 ```
 
