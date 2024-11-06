@@ -37,7 +37,7 @@ cd /etc/nginx/sites-available/
 ```
 
 7.2 - Criar uma cópia do site default com o seguinte comando:
-```
+```sh
 sudo cp default site-jogo-memoria
 ```
 
@@ -89,7 +89,7 @@ server {
         #
         # include snippets/snakeoil.conf;
 
-        root /var/www/site-jogo-memoria;
+        root /var/www/html/site-jogo-memoria;
 
         # Add index.php to the list if you are using PHP
         index index.html;
@@ -154,25 +154,29 @@ sudo rm /etc/nginx/sites-enabled/default
 
 8- Copiando os arquivos do site para o servidor
 
-Navegue para a pasta raiz do usuário e crie uma pasta chamada `apps` com o comando abaixo:
-```sh
-mkdir apps
-```
+Para que possamos colocar o site no ar, precisamos copiar para o servidor os arquivos do nosso site.
+Inicialmente, precisamos mudar as permissões da pasta `/var/www/html` para que o usuário que usamos para acessar o servidor possa criar, modificar e apagar arquivos e pastas.
+Depois disso, clonamos para a pasta `/var/www/html` o nosso repositório.
 
+Agora siga os passos a seguir:
 
-8.1 Copiando os arquivos via SCP
+8.1 Mudando as permissões da pasta `/var/www/html`:
 ```sh
-scp -i "servidor-jogo-memoria.pem" -r ./site-jogo-memoria ubuntu@ec-ip-do-servidor.us-east-2.compute.amazonaws.com:~/apps
+sudo mkdir -p /var/www/html
+sudo chown -R ubuntu:ubuntu /var/www/html
+sudo chmod -R 755 /var/www/html
 ```
 
 8.2 Copiando os arquivos de um repositório git público ou quando o servidor está configurado com chave SSH pública no GitHub:
 ```sh
+cd 
 git clone git@github.com:cezarmezzalirasenac/uc02-atividade-avaliativa-jogo-memoria.git site-jogo-memoria
 ```
 
-
-8.3 Copiando os arquivos para a pasta `/var/www`:
+8.3 (Alternativa) Copiando os arquivos via SCP
+Caso seu repositório seja privado no github ou caso você queira subir para o servidor os arquivos diretamente da sua máquina, basta o usar SCP, que faz a cópia do projeto de forma segura:
 
 ```sh
-sudo cp -R ~/apps/site-jogo-memoria/ /var/www
+scp -i "servidor-jogo-memoria.pem" -r /home/cezar/projetos/site-jogo-memoria ubuntu@ec-ip-do-servidor.us-east-2.compute.amazonaws.com:/var/www/html
 ```
+
